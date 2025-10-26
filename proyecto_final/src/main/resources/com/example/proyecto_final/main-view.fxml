@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.example.proyecto_final.gui.controllers.MainController">
+   
+   <!-- Top: Barra superior moderna -->
+   <top>
+      <HBox styleClass="top-bar" alignment="CENTER_LEFT">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <children>
+                  <Label text="🚨" styleClass="app-icon" />
+                  <VBox>
+                     <children>
+                        <Label text="Sistema de Gestión de Desastres Naturales" styleClass="app-title">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label text="Monitoreo y Coordinación de Emergencias" styleClass="app-subtitle">
+                           <font>
+                              <Font name="System" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" spacing="20.0">
+               <children>
+                  <VBox alignment="CENTER_RIGHT">
+                     <children>
+                        <Label fx:id="userInfoLabel" text="Usuario: No autenticado" styleClass="user-info" />
+                        <Label text="Estado: Operativo" styleClass="system-status" />
+                     </children>
+                  </VBox>
+                  <Label text="🟢" styleClass="status-indicator" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+         </padding>
+      </HBox>
+   </top>
+   
+   <!-- Left: Panel de navegación moderno -->
+   <left>
+      <VBox styleClass="navigation-panel" prefWidth="280.0">
+         <children>
+            <!-- Header del panel -->
+            <VBox styleClass="nav-header" alignment="CENTER">
+               <children>
+                  <Label text="🚨" styleClass="nav-icon" />
+                  <Label text="Sistema de Gestión" styleClass="nav-title" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="Desastres Naturales" styleClass="nav-subtitle" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="System" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="15.0" right="15.0" top="20.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Separador decorativo -->
+            <Separator styleClass="nav-separator" />
+            
+            <!-- Menú de navegación -->
+            <VBox styleClass="nav-menu">
+               <children>
+                  <Button fx:id="inicioButton" mnemonicParsing="false" onAction="#showInicioTab" 
+                          styleClass="nav-button" prefHeight="50.0" text="🏠 Inicio" />
+                  
+                  <Button fx:id="adminButton" mnemonicParsing="false" onAction="#showAdminTab" 
+                          styleClass="nav-button" prefHeight="50.0" text="⚙️ Administración" />
+                  
+                  <Button fx:id="rutasButton" mnemonicParsing="false" onAction="#showRutasTab" 
+                          styleClass="nav-button" prefHeight="50.0" text="🗺️ Rutas" />
+                  
+                  <Button fx:id="estadisticasButton" mnemonicParsing="false" onAction="#showEstadisticasTab" 
+                          styleClass="nav-button" prefHeight="50.0" text="📊 Estadísticas" />
+                  
+                  <Button fx:id="mapaButton" mnemonicParsing="false" onAction="#showMapaTab" 
+                          styleClass="nav-button" prefHeight="50.0" text="🌍 Mapa Interactivo" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="15.0" right="15.0" top="10.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Espaciador -->
+            <Region VBox.vgrow="ALWAYS" />
+            
+            <!-- Separador decorativo -->
+            <Separator styleClass="nav-separator" />
+            
+            <!-- Panel de usuario -->
+            <VBox styleClass="nav-user-panel" alignment="CENTER">
+               <children>
+                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#showLoginDialog" 
+                          styleClass="login-button" prefHeight="45.0" prefWidth="200.0" text="🔐 Iniciar Sesión" />
+                  <Label fx:id="userStatusLabel" text="No autenticado" styleClass="user-status" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="15.0" right="15.0" top="10.0" />
+               </padding>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <!-- Center: Área de contenido principal -->
+   <center>
+      <StackPane fx:id="contentArea" styleClass="content-area">
+         <children>
+            <!-- Vista de Inicio -->
+            <VBox fx:id="inicioView" alignment="CENTER" visible="true">
+               <children>
+                  <Label text="🏠 Panel de Inicio" styleClass="section-title">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label text="Bienvenido al Sistema de Gestión de Desastres Naturales" 
+                         styleClass="welcome-text" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" spacing="20.0">
+                     <children>
+                        <VBox alignment="CENTER" styleClass="info-card">
+                           <children>
+                              <Label text="📍 Ubicaciones" styleClass="card-title">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="ubicacionesCountLabel" text="0" styleClass="card-value">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" styleClass="info-card">
+                           <children>
+                              <Label text="🚨 Emergencias" styleClass="card-title">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="emergenciasCountLabel" text="0" styleClass="card-value">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" styleClass="info-card">
+                           <children>
+                              <Label text="🚁 Equipos" styleClass="card-title">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="equiposCountLabel" text="0" styleClass="card-value">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" styleClass="info-card">
+                           <children>
+                              <Label text="📦 Recursos" styleClass="card-title">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="recursosCountLabel" text="0" styleClass="card-value">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Button fx:id="cargarDatosButton" mnemonicParsing="false" onAction="#cargarDatosPrueba" 
+                          styleClass="primary-button" text="📁 Cargar Datos de Prueba" />
+               </children>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Vista de Administración -->
+            <VBox fx:id="adminView" alignment="CENTER" visible="false">
+               <children>
+                  <Label text="⚙️ Panel de Administración" styleClass="section-title">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label text="Gestión de recursos, equipos y configuraciones del sistema" 
+                         styleClass="welcome-text" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="🚧 En desarrollo - Próximamente disponible" 
+                         styleClass="development-notice" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Italic" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Vista de Rutas -->
+            <VBox fx:id="rutasView" alignment="CENTER" visible="false">
+               <children>
+                  <Label text="🗺️ Panel de Rutas" styleClass="section-title">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label text="Visualización y planificación de rutas de transporte y evacuación" 
+                         styleClass="welcome-text" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="🚧 En desarrollo - Próximamente disponible" 
+                         styleClass="development-notice" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Italic" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Vista de Estadísticas -->
+            <VBox fx:id="estadisticasView" alignment="CENTER" visible="false">
+               <children>
+                  <Label text="📊 Panel de Estadísticas" styleClass="section-title">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label text="Reportes y análisis del estado del sistema y recursos" 
+                         styleClass="welcome-text" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="🚧 En desarrollo - Próximamente disponible" 
+                         styleClass="development-notice" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Italic" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Vista de Mapa -->
+            <VBox fx:id="mapaView" alignment="CENTER" visible="false">
+               <children>
+                  <Label text="🗺️ Mapa Interactivo" styleClass="section-title">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label text="Visualización gráfica de ubicaciones, rutas y estado de emergencias" 
+                         styleClass="welcome-text" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="🚧 En desarrollo - Próximamente disponible" 
+                         styleClass="development-notice" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Italic" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+               </padding>
+            </VBox>
+         </children>
+      </StackPane>
+   </center>
+   
+   <!-- Bottom: Barra de estado -->
+   <bottom>
+      <HBox styleClass="status-bar" alignment="CENTER_LEFT">
+         <children>
+            <Label fx:id="statusLabel" text="Sistema iniciado - Listo para operaciones" styleClass="status-text" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="timeLabel" text="00:00:00" styleClass="time-text" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+         </padding>
+      </HBox>
+   </bottom>
+   
+   <stylesheets>
+      <URL value="@../css/disaster-styles.css" />
+   </stylesheets>
+</BorderPane>
