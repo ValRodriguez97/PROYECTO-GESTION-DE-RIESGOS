@@ -82,6 +82,20 @@ public class Zona {
         this.nivelRiesgo = nivelRiesgo;
     }
     
+    /**
+     * Alias para getNivelRiesgo() para compatibilidad con ColaPrioridad
+     */
+    public NivelUrgencia getNivelUrgencia() {
+        return nivelRiesgo;
+    }
+    
+    /**
+     * Alias para setNivelRiesgo() para compatibilidad con ColaPrioridad
+     */
+    public void setNivelUrgencia(NivelUrgencia nivelUrgencia) {
+        this.nivelRiesgo = nivelUrgencia;
+    }
+    
     public String getNombre() {
         return nombre;
     }
