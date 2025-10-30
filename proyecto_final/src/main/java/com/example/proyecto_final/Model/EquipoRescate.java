@@ -1,4 +1,4 @@
-package com.example.proyecto_final.model;
+package com.example.proyecto_final.Model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -252,7 +252,7 @@ public class EquipoRescate {
     /**
      * Obtiene recursos por tipo
      */
-    public List<Recurso> obtenerRecursosPorTipo(com.example.proyecto_final.enums.TipoRecurso tipo) {
+    public List<Recurso> obtenerRecursosPorTipo(com.example.proyecto_final.Enums.TipoRecurso tipo) {
         return recursosAsignados.stream().filter(recurso -> recurso.getTipo() == tipo).toList();
     }
     

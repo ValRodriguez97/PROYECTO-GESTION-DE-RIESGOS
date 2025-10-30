@@ -1,4 +1,4 @@
-package com.example.proyecto_final.enums;
+package com.example.proyecto_final.Enums;
 
 /**
  * Enum que representa los tipos de recursos en el sistema

@@ -1,7 +1,7 @@
-package com.example.proyecto_final.interfaces;
+package com.example.proyecto_final.Interfaces;
 
-import com.example.proyecto_final.model.Zona;
-import com.example.proyecto_final.structures.Ruta;
+import com.example.proyecto_final.Model.Zona;
+import com.example.proyecto_final.EstructurasDatos.Ruta;
 import java.util.List;
 
 /**

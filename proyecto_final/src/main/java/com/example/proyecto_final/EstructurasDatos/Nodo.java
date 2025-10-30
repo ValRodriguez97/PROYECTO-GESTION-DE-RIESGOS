@@ -1,6 +1,6 @@
-package com.example.proyecto_final.structures;
+package com.example.proyecto_final.EstructurasDatos;
 
-import com.example.proyecto_final.enums.NivelUrgencia;
+import com.example.proyecto_final.Enums.NivelUrgencia;
 import java.util.Objects;
 
 /**

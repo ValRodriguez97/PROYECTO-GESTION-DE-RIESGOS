@@ -1,6 +1,6 @@
-package com.example.proyecto_final.structures;
+package com.example.proyecto_final.EstructurasDatos;
 
-import com.example.proyecto_final.model.Recurso;
+import com.example.proyecto_final.Model.Recurso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

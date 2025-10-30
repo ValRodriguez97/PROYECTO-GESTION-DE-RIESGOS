@@ -1,10 +1,10 @@
-package com.example.proyecto_final.model;
+package com.example.proyecto_final.Model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import com.example.proyecto_final.enums.NivelUrgencia;
-import com.example.proyecto_final.structures.Ruta;
+import com.example.proyecto_final.Enums.NivelUrgencia;
+import com.example.proyecto_final.EstructurasDatos.Ruta;
 
 /**
  * Clase que representa una evacuación en el sistema de gestión de desastres.

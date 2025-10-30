@@ -1,4 +1,4 @@
-package com.example.proyecto_final.gui.controllers;
+package com.example.proyecto_final.Controllers;
 
 import java.io.IOException;
 import java.net.URL;

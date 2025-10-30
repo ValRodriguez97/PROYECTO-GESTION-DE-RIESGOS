@@ -1,6 +1,6 @@
-package com.example.proyecto_final.structures;
+package com.example.proyecto_final.EstructurasDatos;
 
-import com.example.proyecto_final.model.Evacuacion;
+import com.example.proyecto_final.Model.Evacuacion;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

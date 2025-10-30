@@ -1,6 +1,6 @@
-package com.example.proyecto_final.model;
+package com.example.proyecto_final.Model;
 
-import com.example.proyecto_final.enums.NivelUrgencia;
+import com.example.proyecto_final.Enums.NivelUrgencia;
 import java.util.Objects;
 
 /**

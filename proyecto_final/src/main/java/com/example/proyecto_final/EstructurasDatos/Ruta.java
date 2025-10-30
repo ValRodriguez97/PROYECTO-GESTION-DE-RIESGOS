@@ -1,7 +1,7 @@
-package com.example.proyecto_final.structures;
+package com.example.proyecto_final.EstructurasDatos;
 
-import com.example.proyecto_final.enums.TipoRuta;
-import com.example.proyecto_final.model.Zona;
+import com.example.proyecto_final.Enums.TipoRuta;
+import com.example.proyecto_final.Model.Zona;
 import java.util.Objects;
 
 /**

@@ -1,6 +1,6 @@
-package com.example.proyecto_final.gui.controllers;
+package com.example.proyecto_final.Controllers;
 
-import com.example.proyecto_final.model.*;
+import com.example.proyecto_final.Model.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -224,35 +224,35 @@ public class MainController implements Initializable {
      * Crea zonas de prueba
      */
     private void crearZonasPrueba() {
-        Zona zona1 = new Zona("Z001", "Ciudad Central", com.example.proyecto_final.enums.NivelUrgencia.ALTA);
+        Zona zona1 = new Zona("Z001", "Ciudad Central", com.example.proyecto_final.Enums.NivelUrgencia.ALTA);
         zona1.setCoordenadaX(100);
         zona1.setCoordenadaY(100);
         zona1.setPoblacionAfectada(15000);
         zona1.setDescripcion("Zona urbana principal afectada por terremoto");
         sistema.agregarZona(zona1);
         
-        Zona zona2 = new Zona("Z002", "Refugio Norte", com.example.proyecto_final.enums.NivelUrgencia.MEDIA);
+        Zona zona2 = new Zona("Z002", "Refugio Norte", com.example.proyecto_final.Enums.NivelUrgencia.MEDIA);
         zona2.setCoordenadaX(150);
         zona2.setCoordenadaY(80);
         zona2.setPoblacionAfectada(2000);
         zona2.setDescripcion("Refugio temporal para evacuados");
         sistema.agregarZona(zona2);
         
-        Zona zona3 = new Zona("Z003", "Hospital Principal", com.example.proyecto_final.enums.NivelUrgencia.CRITICA);
+        Zona zona3 = new Zona("Z003", "Hospital Principal", com.example.proyecto_final.Enums.NivelUrgencia.CRITICA);
         zona3.setCoordenadaX(120);
         zona3.setCoordenadaY(120);
         zona3.setPoblacionAfectada(500);
         zona3.setDescripcion("Hospital con heridos críticos");
         sistema.agregarZona(zona3);
         
-        Zona zona4 = new Zona("Z004", "Centro de Ayuda Sur", com.example.proyecto_final.enums.NivelUrgencia.BAJA);
+        Zona zona4 = new Zona("Z004", "Centro de Ayuda Sur", com.example.proyecto_final.Enums.NivelUrgencia.BAJA);
         zona4.setCoordenadaX(80);
         zona4.setCoordenadaY(150);
         zona4.setPoblacionAfectada(1000);
         zona4.setDescripcion("Centro de distribución de ayuda");
         sistema.agregarZona(zona4);
         
-        Zona zona5 = new Zona("Z005", "Base de Operaciones", com.example.proyecto_final.enums.NivelUrgencia.MEDIA);
+        Zona zona5 = new Zona("Z005", "Base de Operaciones", com.example.proyecto_final.Enums.NivelUrgencia.MEDIA);
         zona5.setCoordenadaX(200);
         zona5.setCoordenadaY(200);
         zona5.setPoblacionAfectada(100);
@@ -293,19 +293,19 @@ public class MainController implements Initializable {
      * Crea recursos de prueba
      */
     private void crearRecursosPrueba() {
-        Recurso recurso1 = new Recurso("R001", "Agua Potable", com.example.proyecto_final.enums.TipoRecurso.ALIMENTOS, 1000, "litros", "Z001");
+        Recurso recurso1 = new Recurso("R001", "Agua Potable", com.example.proyecto_final.Enums.TipoRecurso.ALIMENTOS, 1000, "litros", "Z001");
         sistema.agregarRecurso(recurso1);
         
-        Recurso recurso2 = new Recurso("R002", "Medicinas Básicas", com.example.proyecto_final.enums.TipoRecurso.MEDICINAS, 500, "unidades", "Z003");
+        Recurso recurso2 = new Recurso("R002", "Medicinas Básicas", com.example.proyecto_final.Enums.TipoRecurso.MEDICINAS, 500, "unidades", "Z003");
         sistema.agregarRecurso(recurso2);
         
-        Recurso recurso3 = new Recurso("R003", "Alimentos No Perecederos", com.example.proyecto_final.enums.TipoRecurso.ALIMENTOS, 2000, "kg", "Z002");
+        Recurso recurso3 = new Recurso("R003", "Alimentos No Perecederos", com.example.proyecto_final.Enums.TipoRecurso.ALIMENTOS, 2000, "kg", "Z002");
         sistema.agregarRecurso(recurso3);
         
-        Recurso recurso4 = new Recurso("R004", "Equipos de Comunicación", com.example.proyecto_final.enums.TipoRecurso.EQUIPOS, 50, "unidades", "Z005");
+        Recurso recurso4 = new Recurso("R004", "Equipos de Comunicación", com.example.proyecto_final.Enums.TipoRecurso.EQUIPOS, 50, "unidades", "Z005");
         sistema.agregarRecurso(recurso4);
         
-        Recurso recurso5 = new Recurso("R005", "Generadores", com.example.proyecto_final.enums.TipoRecurso.EQUIPOS, 20, "unidades", "Z004");
+        Recurso recurso5 = new Recurso("R005", "Generadores", com.example.proyecto_final.Enums.TipoRecurso.EQUIPOS, 20, "unidades", "Z004");
         sistema.agregarRecurso(recurso5);
         
         System.out.println("Recursos de prueba creados: " + sistema.getRecursos().size());

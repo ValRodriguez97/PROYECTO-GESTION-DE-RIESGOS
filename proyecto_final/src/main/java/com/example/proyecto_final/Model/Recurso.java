@@ -1,6 +1,6 @@
-package com.example.proyecto_final.model;
+package com.example.proyecto_final.Model;
 
-import com.example.proyecto_final.enums.TipoRecurso;
+import com.example.proyecto_final.Enums.TipoRecurso;
 import java.time.LocalDate;
 import java.util.Objects;
 

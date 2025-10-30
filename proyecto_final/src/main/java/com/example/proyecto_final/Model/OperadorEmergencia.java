@@ -1,6 +1,6 @@
-package com.example.proyecto_final.model;
+package com.example.proyecto_final.Model;
 
-import com.example.proyecto_final.enums.Rol;
+import com.example.proyecto_final.Enums.Rol;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

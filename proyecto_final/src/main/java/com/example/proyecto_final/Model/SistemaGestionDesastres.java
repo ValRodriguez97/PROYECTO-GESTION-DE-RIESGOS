@@ -1,9 +1,7 @@
-package com.example.proyecto_final.model;
+package com.example.proyecto_final.Model;
 
-import com.example.proyecto_final.structures.Ruta;
-import com.example.proyecto_final.structures.GrafoDirigido;
-import com.example.proyecto_final.structures.ColaPrioridad;
-import com.example.proyecto_final.structures.ArbolDistribucion;
+import com.example.proyecto_final.EstructurasDatos.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
