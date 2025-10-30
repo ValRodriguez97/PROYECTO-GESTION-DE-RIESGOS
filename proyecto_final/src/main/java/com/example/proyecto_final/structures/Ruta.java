@@ -129,20 +129,14 @@ public class Ruta {
         int prioridad = 1;
         
         switch (tipo) {
-            case EVACUACION:
-                prioridad += 5;
+            case AEREA:
+                prioridad += 5; // Rutas aéreas tienen mayor prioridad
                 break;
-            case EMERGENCIA:
-                prioridad += 4;
+            case TERRESTRE:
+                prioridad += 3; // Rutas terrestres tienen prioridad media
                 break;
-            case RESCATE:
-                prioridad += 3;
-                break;
-            case SUMINISTRO:
-                prioridad += 2;
-                break;
-            case ALTERNATIVA:
-                prioridad += 1;
+            case MARITIMA:
+                prioridad += 2; // Rutas marítimas tienen menor prioridad
                 break;
         }
         

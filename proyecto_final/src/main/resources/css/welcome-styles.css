@@ -1,0 +1,249 @@
+/* Estilos para la pantalla de bienvenida del Sistema de Gestión de Desastres Naturales */
+
+.welcome-root {
+    -fx-background-color: #E0F2E9;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Contenedor principal */
+.main-container {
+    -fx-padding: 40;
+    -fx-spacing: 0;
+}
+
+/* Sección visual (izquierda) */
+.visual-section {
+    -fx-padding: 20;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+
+/* Contenedor del globo terráqueo */
+.globe-container {
+    -fx-padding: 20;
+}
+
+/* Globo terráqueo */
+.globe-circle {
+    -fx-fill: #4A90E2;
+    -fx-stroke: #2E5B8A;
+    -fx-stroke-width: 2;
+}
+
+/* Continentes */
+.continents {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+.continent-south-america {
+    -fx-fill: #7ED321;
+    -fx-stroke: #5BA517;
+    -fx-stroke-width: 1;
+}
+
+.continent-north-america {
+    -fx-fill: #7ED321;
+    -fx-stroke: #5BA517;
+    -fx-stroke-width: 1;
+}
+
+.continent-europe-africa {
+    -fx-fill: #7ED321;
+    -fx-stroke: #5BA517;
+    -fx-stroke-width: 1;
+}
+
+.continent-asia {
+    -fx-fill: #7ED321;
+    -fx-stroke: #5BA517;
+    -fx-stroke-width: 1;
+}
+
+/* Pin de ubicación */
+.location-pin {
+    -fx-fill: #E74C3C;
+    -fx-stroke: #C0392B;
+    -fx-stroke-width: 1;
+}
+
+/* Elementos interactivos */
+.interactive-grid {
+    -fx-padding: 20;
+}
+
+.interactive-item {
+    -fx-alignment: center;
+    -fx-spacing: 8;
+}
+
+.icon-container {
+    -fx-alignment: center;
+}
+
+.icon-background {
+    -fx-fill: #F8F9FA;
+    -fx-stroke: #DEE2E6;
+    -fx-stroke-width: 1;
+    -fx-arc-width: 8;
+    -fx-arc-height: 8;
+}
+
+.icon-emoji {
+    -fx-font-size: 20px;
+    -fx-text-fill: #3A7D44;
+}
+
+.interactive-label {
+    -fx-text-fill: #6C757D;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+}
+
+.interactive-button {
+    -fx-background-color: #3A7D44;
+    -fx-text-fill: white;
+    -fx-padding: 4 8;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+
+/* Sección de texto (derecha) */
+.text-section {
+    -fx-padding: 40;
+    -fx-alignment: center;
+    -fx-spacing: 30;
+    -fx-min-width: 300;
+}
+
+/* Contenedor del título */
+.title-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 5;
+}
+
+/* Líneas del título */
+.main-title-line {
+    -fx-font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3A7D44;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+}
+
+.main-title-year {
+    -fx-font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3A7D44;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+}
+
+/* Contenedor de botones */
+.buttons-container {
+    -fx-alignment: center;
+    -fx-spacing: 15;
+}
+
+.button-row {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+/* Botones de acción */
+.action-button {
+    -fx-background-color: #3A7D44;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 24;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(58, 125, 68, 0.3), 4, 0, 0, 2);
+}
+
+.action-button:hover {
+    -fx-background-color: #2E5F3A;
+    -fx-effect: dropshadow(gaussian, rgba(58, 125, 68, 0.5), 6, 0, 0, 3);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.action-button:pressed {
+    -fx-background-color: #1E3F26;
+    -fx-effect: dropshadow(gaussian, rgba(58, 125, 68, 0.2), 2, 0, 0, 1);
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Iconos de botones */
+.button-icon-emoji {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Efectos de transición */
+.action-button, .interactive-button {
+    -fx-transition: all 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 800px) {
+    .main-container {
+        -fx-orientation: vertical;
+    }
+    
+    .visual-section {
+        -fx-pref-width: 100%;
+    }
+    
+    .text-section {
+        -fx-pref-width: 100%;
+        -fx-min-width: 0;
+    }
+    
+    .main-title-line {
+        -fx-font-size: 36px;
+    }
+    
+    .main-title-year {
+        -fx-font-size: 28px;
+    }
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0% { -fx-scale-x: 1.0; -fx-scale-y: 1.0; }
+    50% { -fx-scale-x: 1.1; -fx-scale-y: 1.1; }
+    100% { -fx-scale-x: 1.0; -fx-scale-y: 1.0; }
+}
+
+.location-pin {
+    -fx-animation: pulse 2s infinite;
+}
+
+/* Efectos de hover para elementos interactivos */
+.interactive-item:hover .icon-background {
+    -fx-fill: #E8F5E8;
+    -fx-stroke: #3A7D44;
+}
+
+.interactive-item:hover .interactive-label {
+    -fx-text-fill: #3A7D44;
+    -fx-font-weight: bold;
+}
+
+/* Líneas de conexión (simuladas con CSS) */
+.interactive-item::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 60px;
+    background-color: #DEE2E6;
+    transform: rotate(45deg);
+    z-index: -1;
+}

@@ -14,7 +14,6 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,13 +27,10 @@ public class MainController implements Initializable {
     @FXML private Button loginButton, cargarDatosButton;
     @FXML private StackPane contentArea;
     @FXML private VBox inicioView, adminView, rutasView, estadisticasView, mapaView;
-    @FXML private Label ubicacionesCountLabel, emergenciasCountLabel, equiposCountLabel, recursosCountLabel;
+    @FXML private Label zonasCountLabel, equiposCountLabel, recursosCountLabel;
     @FXML private Label statusLabel, timeLabel;
     
-    private List<Ubicacion> ubicaciones;
-    private List<Emergencia> emergencias;
-    private List<EquipoRescate> equipos;
-    private List<Recurso> recursos;
+    private SistemaGestionDesastres sistema;
     private Usuario usuarioActual;
     
     private Timeline timeUpdater;
@@ -42,10 +38,8 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
-        ubicaciones = new ArrayList<>();
-        emergencias = new ArrayList<>();
-        equipos = new ArrayList<>();
-        recursos = new ArrayList<>();
+        sistema = new SistemaGestionDesastres();
+        sistema.inicializarSistema();
         
         configurarInterfazInicial();
         
@@ -207,9 +201,7 @@ public class MainController implements Initializable {
     private void cargarDatosPrueba() {
         statusLabel.setText("Cargando datos de prueba...");
         
-        crearUbicacionesPrueba();
-        
-        crearEmergenciasPrueba();
+        crearZonasPrueba();
         
         crearEquiposPrueba();
         
@@ -223,95 +215,109 @@ public class MainController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Datos Cargados");
             alert.setHeaderText("Datos de prueba cargados exitosamente");
-            alert.setContentText(String.format("Se cargaron %d ubicaciones, %d emergencias, %d equipos y %d recursos", ubicaciones.size(), emergencias.size(), equipos.size(), recursos.size()));
+            alert.setContentText(String.format("Se cargaron %d zonas, %d equipos y %d recursos", sistema.getZonas().size(), sistema.getEquipos().size(), sistema.getRecursos().size()));
             alert.showAndWait();
         });
     }
     
     /**
-     * Crea ubicaciones de prueba
+     * Crea zonas de prueba
      */
-    private void crearUbicacionesPrueba() {
-        ubicaciones.clear();
+    private void crearZonasPrueba() {
+        Zona zona1 = new Zona("Z001", "Ciudad Central", com.example.proyecto_final.enums.NivelUrgencia.ALTA);
+        zona1.setCoordenadaX(100);
+        zona1.setCoordenadaY(100);
+        zona1.setPoblacionAfectada(15000);
+        zona1.setDescripcion("Zona urbana principal afectada por terremoto");
+        sistema.agregarZona(zona1);
         
-        ubicaciones.add(new Ubicacion("U001", "Ciudad Central", 100, 100, Ubicacion.TipoUbicacion.CIUDAD, 50000));
-        ubicaciones.add(new Ubicacion("U002", "Refugio Norte", 150, 80, Ubicacion.TipoUbicacion.REFUGIO, 1000));
-        ubicaciones.add(new Ubicacion("U003", "Hospital Principal", 120, 120, Ubicacion.TipoUbicacion.HOSPITAL, 500));
-        ubicaciones.add(new Ubicacion("U004", "Centro de Ayuda Sur", 80, 150, Ubicacion.TipoUbicacion.CENTRO_AYUDA, 2000));
-        ubicaciones.add(new Ubicacion("U005", "Base de Operaciones", 200, 200, Ubicacion.TipoUbicacion.BASE_OPERACIONES, 100));
+        Zona zona2 = new Zona("Z002", "Refugio Norte", com.example.proyecto_final.enums.NivelUrgencia.MEDIA);
+        zona2.setCoordenadaX(150);
+        zona2.setCoordenadaY(80);
+        zona2.setPoblacionAfectada(2000);
+        zona2.setDescripcion("Refugio temporal para evacuados");
+        sistema.agregarZona(zona2);
         
-        ubicaciones.get(0).setNivelUrgencia(Ubicacion.NivelUrgencia.ALTA);
-        ubicaciones.get(1).setNivelUrgencia(Ubicacion.NivelUrgencia.MEDIA);
-        ubicaciones.get(2).setNivelUrgencia(Ubicacion.NivelUrgencia.CRITICA);
-        ubicaciones.get(3).setNivelUrgencia(Ubicacion.NivelUrgencia.BAJA);
-        ubicaciones.get(4).setNivelUrgencia(Ubicacion.NivelUrgencia.MEDIA);
+        Zona zona3 = new Zona("Z003", "Hospital Principal", com.example.proyecto_final.enums.NivelUrgencia.CRITICA);
+        zona3.setCoordenadaX(120);
+        zona3.setCoordenadaY(120);
+        zona3.setPoblacionAfectada(500);
+        zona3.setDescripcion("Hospital con heridos críticos");
+        sistema.agregarZona(zona3);
         
-        System.out.println("Ubicaciones de prueba creadas: " + ubicaciones.size());
-    }
-    
-    /**
-     * Crea emergencias de prueba
-     */
-    private void crearEmergenciasPrueba() {
-        emergencias.clear();
+        Zona zona4 = new Zona("Z004", "Centro de Ayuda Sur", com.example.proyecto_final.enums.NivelUrgencia.BAJA);
+        zona4.setCoordenadaX(80);
+        zona4.setCoordenadaY(150);
+        zona4.setPoblacionAfectada(1000);
+        zona4.setDescripcion("Centro de distribución de ayuda");
+        sistema.agregarZona(zona4);
         
-        emergencias.add(new Emergencia("E001", "U001", Emergencia.TipoEmergencia.TERREMOTO, Emergencia.NivelUrgencia.CRITICA, "Terremoto de magnitud 7.2", "admin"));
-        emergencias.add(new Emergencia("E002", "U002", Emergencia.TipoEmergencia.INUNDACION, Emergencia.NivelUrgencia.ALTA, "Inundación por desbordamiento", "operador1"));
-        emergencias.add(new Emergencia("E003", "U003", Emergencia.TipoEmergencia.INCENDIO, Emergencia.NivelUrgencia.MEDIA, "Incendio en sector residencial", "operador2"));
+        Zona zona5 = new Zona("Z005", "Base de Operaciones", com.example.proyecto_final.enums.NivelUrgencia.MEDIA);
+        zona5.setCoordenadaX(200);
+        zona5.setCoordenadaY(200);
+        zona5.setPoblacionAfectada(100);
+        zona5.setDescripcion("Base de operaciones de emergencia");
+        sistema.agregarZona(zona5);
         
-        emergencias.get(0).setPersonasAfectadas(15000);
-        emergencias.get(1).setPersonasAfectadas(5000);
-        emergencias.get(2).setPersonasAfectadas(2000);
-        
-        System.out.println("Emergencias de prueba creadas: " + emergencias.size());
+        System.out.println("Zonas de prueba creadas: " + sistema.getZonas().size());
     }
     
     /**
      * Crea equipos de rescate de prueba
      */
     private void crearEquiposPrueba() {
-        equipos.clear();
+        EquipoRescate equipo1 = new EquipoRescate("EQ001", "Equipo Médico Alpha", EquipoRescate.TipoEquipo.MEDICO, "Z003", 8, "Dr. García");
+        equipo1.setPersonalAsignado(6);
+        equipo1.setExperienciaAnos(8);
+        sistema.agregarEquipo(equipo1);
         
-        equipos.add(new EquipoRescate("EQ001", "Equipo Médico Alpha", EquipoRescate.TipoEquipo.MEDICO, "U003", 8, "Dr. García"));
-        equipos.add(new EquipoRescate("EQ002", "Bomberos Bravo", EquipoRescate.TipoEquipo.BOMBEROS, "U005", 12, "Cpt. Rodríguez"));
-        equipos.add(new EquipoRescate("EQ003", "Rescate Charlie", EquipoRescate.TipoEquipo.BUSQUEDA_RESCATE, "U001", 6, "Sgt. López"));
-        equipos.add(new EquipoRescate("EQ004", "Evacuación Delta", EquipoRescate.TipoEquipo.EVACUACION, "U002", 10, "Lt. Martínez"));
+        EquipoRescate equipo2 = new EquipoRescate("EQ002", "Bomberos Bravo", EquipoRescate.TipoEquipo.BOMBEROS, "Z005", 12, "Cpt. Rodríguez");
+        equipo2.setPersonalAsignado(10);
+        equipo2.setExperienciaAnos(12);
+        sistema.agregarEquipo(equipo2);
         
-        equipos.get(0).setPersonalAsignado(6);
-        equipos.get(0).setExperienciaAnos(8);
-        equipos.get(1).setPersonalAsignado(10);
-        equipos.get(1).setExperienciaAnos(12);
-        equipos.get(2).setPersonalAsignado(5);
-        equipos.get(2).setExperienciaAnos(6);
-        equipos.get(3).setPersonalAsignado(8);
-        equipos.get(3).setExperienciaAnos(4);
+        EquipoRescate equipo3 = new EquipoRescate("EQ003", "Rescate Charlie", EquipoRescate.TipoEquipo.BUSQUEDA_RESCATE, "Z001", 6, "Sgt. López");
+        equipo3.setPersonalAsignado(5);
+        equipo3.setExperienciaAnos(6);
+        sistema.agregarEquipo(equipo3);
         
-        System.out.println("Equipos de prueba creados: " + equipos.size());
+        EquipoRescate equipo4 = new EquipoRescate("EQ004", "Evacuación Delta", EquipoRescate.TipoEquipo.EVACUACION, "Z002", 10, "Lt. Martínez");
+        equipo4.setPersonalAsignado(8);
+        equipo4.setExperienciaAnos(4);
+        sistema.agregarEquipo(equipo4);
+        
+        System.out.println("Equipos de prueba creados: " + sistema.getEquipos().size());
     }
     
     /**
      * Crea recursos de prueba
      */
     private void crearRecursosPrueba() {
-        recursos.clear();
+        Recurso recurso1 = new Recurso("R001", "Agua Potable", com.example.proyecto_final.enums.TipoRecurso.ALIMENTOS, 1000, "litros", "Z001");
+        sistema.agregarRecurso(recurso1);
         
-        recursos.add(new Recurso("R001", "Agua Potable", com.example.proyecto_final.enums.TipoRecurso.AGUA, 1000, "litros", "U001"));
-        recursos.add(new Recurso("R002", "Medicinas Básicas", com.example.proyecto_final.enums.TipoRecurso.MEDICINA, 500, "unidades", "U003"));
-        recursos.add(new Recurso("R003", "Alimentos No Perecederos", com.example.proyecto_final.enums.TipoRecurso.ALIMENTO, 2000, "kg", "U002"));
-        recursos.add(new Recurso("R004", "Equipos de Comunicación", com.example.proyecto_final.enums.TipoRecurso.COMUNICACION, 50, "unidades", "U005"));
-        recursos.add(new Recurso("R005", "Generadores", com.example.proyecto_final.enums.TipoRecurso.ENERGIA, 20, "unidades", "U004"));
+        Recurso recurso2 = new Recurso("R002", "Medicinas Básicas", com.example.proyecto_final.enums.TipoRecurso.MEDICINAS, 500, "unidades", "Z003");
+        sistema.agregarRecurso(recurso2);
         
-        System.out.println("Recursos de prueba creados: " + recursos.size());
+        Recurso recurso3 = new Recurso("R003", "Alimentos No Perecederos", com.example.proyecto_final.enums.TipoRecurso.ALIMENTOS, 2000, "kg", "Z002");
+        sistema.agregarRecurso(recurso3);
+        
+        Recurso recurso4 = new Recurso("R004", "Equipos de Comunicación", com.example.proyecto_final.enums.TipoRecurso.EQUIPOS, 50, "unidades", "Z005");
+        sistema.agregarRecurso(recurso4);
+        
+        Recurso recurso5 = new Recurso("R005", "Generadores", com.example.proyecto_final.enums.TipoRecurso.EQUIPOS, 20, "unidades", "Z004");
+        sistema.agregarRecurso(recurso5);
+        
+        System.out.println("Recursos de prueba creados: " + sistema.getRecursos().size());
     }
     
     /**
      * Actualiza los contadores en la vista de inicio
      */
     private void actualizarContadores() {
-        ubicacionesCountLabel.setText(String.valueOf(ubicaciones.size()));
-        emergenciasCountLabel.setText(String.valueOf(emergencias.size()));
-        equiposCountLabel.setText(String.valueOf(equipos.size()));
-        recursosCountLabel.setText(String.valueOf(recursos.size()));
+        zonasCountLabel.setText(String.valueOf(sistema.getZonas().size()));
+        equiposCountLabel.setText(String.valueOf(sistema.getEquipos().size()));
+        recursosCountLabel.setText(String.valueOf(sistema.getRecursos().size()));
     }
     
     /**
@@ -330,31 +336,31 @@ public class MainController implements Initializable {
     }
     
     /**
-     * Obtiene la lista de ubicaciones
+     * Obtiene el sistema de gestión de desastres
      */
-    public List<Ubicacion> getUbicaciones() {
-        return ubicaciones;
+    public SistemaGestionDesastres getSistema() {
+        return sistema;
     }
     
     /**
-     * Obtiene la lista de emergencias
+     * Obtiene la lista de zonas
      */
-    public List<Emergencia> getEmergencias() {
-        return emergencias;
+    public List<Zona> getZonas() {
+        return sistema.getZonas();
     }
     
     /**
      * Obtiene la lista de equipos
      */
     public List<EquipoRescate> getEquipos() {
-        return equipos;
+        return sistema.getEquipos();
     }
     
     /**
      * Obtiene la lista de recursos
      */
     public List<Recurso> getRecursos() {
-        return recursos;
+        return sistema.getRecursos();
     }
     
     /**

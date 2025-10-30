@@ -1,22 +1,29 @@
 package com.example.proyecto_final.model;
 
-import com.example.proyecto_final.structures.Ruta;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.example.proyecto_final.enums.NivelUrgencia;
+import com.example.proyecto_final.structures.Ruta;
+
 /**
- * Clase que representa una evacuación en el sistema de gestión de desastres
+ * Clase que representa una evacuación en el sistema de gestión de desastres.
+ * Una evacuación está relacionada con una ruta específica para el traslado de personas.
  */
 public class Evacuacion {
     private String id;
+    private String nombre;
+    private String descripcion;
     private Ruta ruta;
+    private NivelUrgencia nivelUrgencia;
+    private int personasAEvacuar;
     private int personasEvacuadas;
-    private int personasPendientes;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
     private EstadoEvacuacion estado;
-    private String responsableId;
-    private String observaciones;
+    private String responsable;
+    private String zonaOrigen;
+    private String zonaDestino;
     
     /**
      * Enum para representar el estado de la evacuación
@@ -42,54 +49,87 @@ public class Evacuacion {
     public Evacuacion() {
         this.estado = EstadoEvacuacion.PLANIFICADA;
         this.personasEvacuadas = 0;
-        this.personasPendientes = 0;
         this.fechaInicio = LocalDateTime.now();
     }
     
-    public Evacuacion(String id, Ruta ruta, int personasPendientes, String responsableId) {
+    public Evacuacion(String id, String nombre, Ruta ruta, NivelUrgencia nivelUrgencia) {
         this();
         this.id = id;
+        this.nombre = nombre;
         this.ruta = ruta;
-        this.personasPendientes = personasPendientes;
-        this.responsableId = responsableId;
+        this.nivelUrgencia = nivelUrgencia;
+        if (ruta != null) {
+            this.zonaOrigen = ruta.getOrigen().getId();
+            this.zonaDestino = ruta.getDestino().getId();
+        }
+    }
+    
+    /**
+     * Calcula la prioridad de la evacuación basada en urgencia y cantidad de personas
+     */
+    public int calcularPrioridad() {
+        int prioridad = nivelUrgencia.getValor();
+        
+        if (personasAEvacuar > 10000) prioridad += 3;
+        else if (personasAEvacuar > 5000) prioridad += 2;
+        else if (personasAEvacuar > 1000) prioridad += 1;
+        
+        if (ruta != null) {
+            // Prioridad adicional basada en la distancia de la ruta
+            if (ruta.getDistancia() > 100) prioridad += 1;
+            if (ruta.getNivelRiesgo() > 0.7) prioridad += 2;
+        }
+        
+        return prioridad;
     }
     
     /**
      * Calcula el porcentaje de evacuación completada
      */
     public double calcularPorcentajeCompletado() {
-        int totalPersonas = personasEvacuadas + personasPendientes;
-        if (totalPersonas == 0) return 0.0;
-        return (double) personasEvacuadas / totalPersonas * 100;
-    }
-    
-    /**
-     * Calcula el tiempo transcurrido desde el inicio
-     */
-    public long calcularTiempoTranscurrido() {
-        if (fechaInicio == null) return 0;
-        LocalDateTime fin = fechaFin != null ? fechaFin : LocalDateTime.now();
-        return java.time.Duration.between(fechaInicio, fin).toHours();
+        if (personasAEvacuar == 0) return 0.0;
+        return (double) personasEvacuadas / personasAEvacuar * 100;
     }
     
     /**
      * Verifica si la evacuación está completada
      */
     public boolean estaCompletada() {
-        return estado == EstadoEvacuacion.COMPLETADA || personasPendientes == 0;
+        return estado == EstadoEvacuacion.COMPLETADA || 
+               (personasEvacuadas >= personasAEvacuar && personasAEvacuar > 0);
     }
     
     /**
-     * Verifica si la evacuación está en progreso
+     * Calcula el tiempo estimado de evacuación basado en la ruta
      */
-    public boolean estaEnProgreso() {
-        return estado == EstadoEvacuacion.EN_PROGRESO;
+    public double calcularTiempoEstimado() {
+        if (ruta == null) return 0.0;
+        
+        // Tiempo base de la ruta + tiempo adicional por cantidad de personas
+        double tiempoBase = ruta.getTiempoEstimado();
+        double tiempoAdicional = (personasAEvacuar / 100.0) * 0.5; // 0.5 horas por cada 100 personas
+        
+        return tiempoBase + tiempoAdicional;
+    }
+    
+    /**
+     * Actualiza el progreso de la evacuación
+     */
+    public void actualizarProgreso(int personasEvacuadas) {
+        this.personasEvacuadas = Math.min(personasEvacuadas, personasAEvacuar);
+        
+        if (estaCompletada()) {
+            this.estado = EstadoEvacuacion.COMPLETADA;
+            this.fechaFin = LocalDateTime.now();
+        } else if (this.personasEvacuadas > 0) {
+            this.estado = EstadoEvacuacion.EN_PROGRESO;
+        }
     }
     
     /**
      * Inicia la evacuación
      */
-    public void iniciar() {
+    public void iniciarEvacuacion() {
         if (estado == EstadoEvacuacion.PLANIFICADA) {
             this.estado = EstadoEvacuacion.EN_PROGRESO;
             this.fechaInicio = LocalDateTime.now();
@@ -97,58 +137,32 @@ public class Evacuacion {
     }
     
     /**
-     * Completa la evacuación
-     */
-    public void completar() {
-        if (estado == EstadoEvacuacion.EN_PROGRESO) {
-            this.estado = EstadoEvacuacion.COMPLETADA;
-            this.fechaFin = LocalDateTime.now();
-            this.personasPendientes = 0;
-        }
-    }
-    
-    /**
      * Cancela la evacuación
      */
-    public void cancelar(String motivo) {
+    public void cancelarEvacuacion() {
         this.estado = EstadoEvacuacion.CANCELADA;
         this.fechaFin = LocalDateTime.now();
-        this.observaciones = motivo;
     }
     
     /**
-     * Registra la evacuación de personas
+     * Suspende la evacuación
      */
-    public void registrarEvacuacion(int cantidad) {
-        if (cantidad > 0 && cantidad <= personasPendientes && estaEnProgreso()) {
-            this.personasEvacuadas += cantidad;
-            this.personasPendientes -= cantidad;
-            
-            if (personasPendientes == 0) {
-                completar();
-            }
+    public void suspenderEvacuacion() {
+        if (estado == EstadoEvacuacion.EN_PROGRESO) {
+            this.estado = EstadoEvacuacion.SUSPENDIDA;
         }
     }
     
     /**
-     * Calcula la prioridad de la evacuación
+     * Reanuda una evacuación suspendida
      */
-    public int calcularPrioridad() {
-        int prioridad = 1;
-        
-        if (ruta != null && ruta.getOrigen() != null) {
-            prioridad += ruta.getOrigen().getNivelRiesgo().getValor();
+    public void reanudarEvacuacion() {
+        if (estado == EstadoEvacuacion.SUSPENDIDA) {
+            this.estado = EstadoEvacuacion.EN_PROGRESO;
         }
-        
-        if (personasPendientes > 1000) prioridad += 3;
-        else if (personasPendientes > 500) prioridad += 2;
-        else if (personasPendientes > 100) prioridad += 1;
-        
-        if (estaEnProgreso()) prioridad += 2;
-        
-        return prioridad;
     }
     
+    // Getters y Setters
     public String getId() {
         return id;
     }
@@ -157,12 +171,48 @@ public class Evacuacion {
         this.id = id;
     }
     
+    public String getNombre() {
+        return nombre;
+    }
+    
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    
+    public String getDescripcion() {
+        return descripcion;
+    }
+    
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    
     public Ruta getRuta() {
         return ruta;
     }
     
     public void setRuta(Ruta ruta) {
         this.ruta = ruta;
+        if (ruta != null) {
+            this.zonaOrigen = ruta.getOrigen().getId();
+            this.zonaDestino = ruta.getDestino().getId();
+        }
+    }
+    
+    public NivelUrgencia getNivelUrgencia() {
+        return nivelUrgencia;
+    }
+    
+    public void setNivelUrgencia(NivelUrgencia nivelUrgencia) {
+        this.nivelUrgencia = nivelUrgencia;
+    }
+    
+    public int getPersonasAEvacuar() {
+        return personasAEvacuar;
+    }
+    
+    public void setPersonasAEvacuar(int personasAEvacuar) {
+        this.personasAEvacuar = Math.max(0, personasAEvacuar);
     }
     
     public int getPersonasEvacuadas() {
@@ -170,15 +220,7 @@ public class Evacuacion {
     }
     
     public void setPersonasEvacuadas(int personasEvacuadas) {
-        this.personasEvacuadas = Math.max(0, personasEvacuadas);
-    }
-    
-    public int getPersonasPendientes() {
-        return personasPendientes;
-    }
-    
-    public void setPersonasPendientes(int personasPendientes) {
-        this.personasPendientes = Math.max(0, personasPendientes);
+        this.personasEvacuadas = Math.max(0, Math.min(personasEvacuadas, personasAEvacuar));
     }
     
     public LocalDateTime getFechaInicio() {
@@ -205,20 +247,28 @@ public class Evacuacion {
         this.estado = estado;
     }
     
-    public String getResponsableId() {
-        return responsableId;
+    public String getResponsable() {
+        return responsable;
     }
     
-    public void setResponsableId(String responsableId) {
-        this.responsableId = responsableId;
+    public void setResponsable(String responsable) {
+        this.responsable = responsable;
     }
     
-    public String getObservaciones() {
-        return observaciones;
+    public String getZonaOrigen() {
+        return zonaOrigen;
     }
     
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
+    public void setZonaOrigen(String zonaOrigen) {
+        this.zonaOrigen = zonaOrigen;
+    }
+    
+    public String getZonaDestino() {
+        return zonaDestino;
+    }
+    
+    public void setZonaDestino(String zonaDestino) {
+        this.zonaDestino = zonaDestino;
     }
     
     @Override
@@ -236,6 +286,8 @@ public class Evacuacion {
     
     @Override
     public String toString() {
-        return String.format("Evacuacion{id='%s', ruta=%s, evacuadas=%d, pendientes=%d, estado=%s}", id, ruta != null ? ruta.getId() : "null", personasEvacuadas, personasPendientes, estado.getDescripcion());
+        return String.format("Evacuacion{id='%s', nombre='%s', estado=%s, progreso=%.1f%%, ruta=%s}", 
+            id, nombre, estado.getDescripcion(), calcularPorcentajeCompletado(), 
+            ruta != null ? ruta.getId() : "Sin ruta");
     }
 }

@@ -144,26 +144,12 @@
                      <children>
                         <VBox alignment="CENTER" styleClass="info-card">
                            <children>
-                              <Label text="📍 Ubicaciones" styleClass="card-title">
+                              <Label text="📍 Zonas" styleClass="card-title">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="ubicacionesCountLabel" text="0" styleClass="card-value">
-                                 <font>
-                                    <Font name="System Bold" size="20.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <VBox alignment="CENTER" styleClass="info-card">
-                           <children>
-                              <Label text="🚨 Emergencias" styleClass="card-title">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="emergenciasCountLabel" text="0" styleClass="card-value">
+                              <Label fx:id="zonasCountLabel" text="0" styleClass="card-value">
                                  <font>
                                     <Font name="System Bold" size="20.0" />
                                  </font>
