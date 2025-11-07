@@ -5,392 +5,233 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Desastres Naturales 2025</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-
         .api-config {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 2000;
-            font-size: 12px;
+            position: fixed; top: 10px; right: 10px; background: white;
+            padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 2000; font-size: 12px;
         }
-
-        .api-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
+        .api-status { display: flex; align-items: center; gap: 5px; }
         .api-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #95a5a6;
+            width: 10px; height: 10px; border-radius: 50%; background: #95a5a6;
         }
-
-        .api-indicator.connected {
-            background: #27ae60;
-            animation: pulse 2s infinite;
-        }
-
-        .api-indicator.error {
-            background: #e74c3c;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        .api-indicator.connected { background: #27ae60; animation: pulse 2s infinite; }
+        .api-indicator.error { background: #e74c3c; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
         }
-
         .login-box, .register-box {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 450px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
+            background: white; padding: 40px; border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;
+            max-width: 450px; width: 100%; max-height: 90vh; overflow-y: auto;
         }
-
         .login-box h1, .register-box h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 2em;
+            color: #667eea; margin-bottom: 10px; font-size: 2em;
         }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-
-        .year {
-            color: #764ba2;
-            font-weight: bold;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 1.1em; }
+        .year { color: #764ba2; font-weight: bold; }
+        .input-group { margin-bottom: 20px; text-align: left; }
         .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
+            display: block; margin-bottom: 8px; color: #333; font-weight: 500;
         }
-
         .input-group input, .input-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: border 0.3s;
+            width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0;
+            border-radius: 10px; font-size: 14px; transition: border 0.3s;
         }
-
         .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: #667eea;
+            outline: none; border-color: #667eea;
         }
-
         .btn-primary {
-            width: 100%;
-            padding: 12px;
+            width: 100%; padding: 12px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-top: 10px;
+            color: white; border: none; border-radius: 10px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s; margin-top: 10px;
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-secondary {
-            width: 100%;
-            padding: 12px;
-            background: #f5f5f5;
-            color: #667eea;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
+            width: 100%; padding: 12px; background: #f5f5f5;
+            color: #667eea; border: 2px solid #667eea; border-radius: 10px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s; margin-top: 10px;
         }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .create-account {
-            margin-top: 20px;
-            color: #666;
-        }
-
+        .btn-secondary:hover { background: #667eea; color: white; }
+        .create-account { margin-top: 20px; color: #666; }
         .create-account a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: bold;
-            cursor: pointer;
+            color: #667eea; text-decoration: none; font-weight: bold; cursor: pointer;
         }
-
         .error-message, .success-message {
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
+            padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none;
         }
+        .error-message { background: #ffebee; color: #c62828; }
+        .success-message { background: #e8f5e9; color: #2e7d32; }
 
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .success-message {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .dashboard {
-            display: none;
-        }
-
+        .dashboard { display: none; }
         .navbar {
-            background: white;
-            padding: 15px 30px;
+            background: white; padding: 15px 30px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .navbar h2 {
-            color: #667eea;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .navbar-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
+        .navbar h2 { color: #667eea; display: flex; align-items: center; gap: 10px; }
+        .navbar-right { display: flex; gap: 20px; align-items: center; }
         .logout-btn {
-            background: #ff5252;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
+            background: #ff5252; color: white; border: none;
+            padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         .hero {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: white; border-radius: 20px; padding: 40px;
+            margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
-
-        .hero h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-
+        .hero h1 { color: #333; margin-bottom: 30px; font-size: 2.5em; }
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
-
         .feature-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
+            color: white; padding: 25px; border-radius: 15px;
             transition: transform 0.3s;
         }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
+        .feature-card:hover { transform: translateY(-5px); }
         .main-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 20px; margin-bottom: 30px;
         }
-
         .action-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
+            background: white; padding: 30px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); cursor: pointer;
+            transition: all 0.3s; text-align: center;
         }
-
         .action-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-
         .btn-action {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
+            color: white; border: none; padding: 12px 30px;
+            border-radius: 10px; cursor: pointer; font-weight: bold;
+            transition: transform 0.2s; margin: 5px;
         }
-
-        .btn-action:hover {
-            transform: scale(1.05);
-        }
+        .btn-action:hover { transform: scale(1.05); }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #map {
-            height: 600px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            height: 600px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 20px;
         }
-
         .map-controls {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            background: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 30px;
         }
-
-        .map-controls h3 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
+        .map-controls h3 { color: #333; margin-bottom: 15px; }
         .selected-location {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
+            background: #f5f5f5; padding: 15px; border-radius: 10px; margin-top: 15px;
         }
+        .selected-location p { margin: 5px 0; color: #666; }
+        .selected-location strong { color: #667eea; }
 
-        .selected-location p {
-            margin: 5px 0;
-            color: #666;
+        .mode-selector {
+            display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;
         }
-
-        .selected-location strong {
-            color: #667eea;
+        .mode-btn {
+            padding: 10px 20px; border: 2px solid #667eea;
+            background: white; color: #667eea; border-radius: 8px;
+            cursor: pointer; font-weight: bold; transition: all 0.3s;
         }
-
-        .hidden {
-            display: none !important;
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border-color: #764ba2;
         }
+        .mode-btn:hover { transform: translateY(-2px); }
 
+        .route-info {
+            background: #e3f2fd; padding: 15px; border-radius: 10px;
+            margin-top: 15px; border-left: 4px solid #2196f3;
+        }
+        .route-info h4 { color: #1976d2; margin-bottom: 10px; }
+        .route-info p { margin: 5px 0; color: #555; }
+
+        .hidden { display: none !important; }
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            z-index: 1000; justify-content: center; align-items: center;
         }
-
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+            background: white; padding: 30px; border-radius: 15px;
+            max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
         }
-
         .close-modal {
-            float: right;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: #999;
+            float: right; font-size: 1.5em; cursor: pointer; color: #999;
+        }
+        .loading { text-align: center; padding: 20px; color: #666; }
+        .two-column {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+        @media (max-width: 768px) {
+            .two-column { grid-template-columns: 1fr; }
         }
 
-        .loading {
+        .legend {
+            background: white; padding: 15px; border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-top: 15px;
+        }
+        .legend h4 { margin-bottom: 10px; color: #333; }
+        .legend-item {
+            display: flex; align-items: center; gap: 10px; margin: 8px 0;
+        }
+        .legend-color {
+            width: 20px; height: 20px; border-radius: 50%;
+        }
+
+        .slider-container {
+            margin: 15px 0;
+        }
+
+        .slider-container input[type="range"] {
+            width: 100%;
+        }
+
+        .slider-value {
             text-align: center;
-            padding: 20px;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 5px;
+        }
+
+        .address-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 12px;
             color: #666;
         }
 
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .two-column {
-                grid-template-columns: 1fr;
-            }
+        .leaflet-routing-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
     </style>
 </head>
@@ -407,10 +248,8 @@
     <div class="login-box">
         <h1>Gestión de<br>Desastres Naturales</h1>
         <p class="subtitle"><span class="year">2025</span></p>
-
         <div id="loginError" class="error-message"></div>
         <div id="loginSuccess" class="success-message"></div>
-
         <form id="loginForm">
             <div class="input-group">
                 <label for="username">Usuario</label>
@@ -422,7 +261,6 @@
             </div>
             <button type="submit" class="btn-primary" id="loginBtn">Ingresa Aquí</button>
         </form>
-
         <p class="create-account">¿No tienes cuenta? <a id="showRegisterLink">Crea tu cuenta aquí</a></p>
     </div>
 </div>
@@ -432,10 +270,8 @@
     <div class="register-box">
         <h1>Crear Cuenta</h1>
         <p class="subtitle">Registro de nuevo usuario</p>
-
         <div id="registerError" class="error-message"></div>
         <div id="registerSuccess" class="success-message"></div>
-
         <form id="registerForm">
             <div class="two-column">
                 <div class="input-group">
@@ -447,22 +283,18 @@
                     <input type="text" id="regApellido" placeholder="Tu apellido" required>
                 </div>
             </div>
-
             <div class="input-group">
                 <label for="regEmail">Correo Electrónico *</label>
                 <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required>
             </div>
-
             <div class="input-group">
                 <label for="regUsername">Usuario *</label>
                 <input type="text" id="regUsername" placeholder="Nombre de usuario" required>
             </div>
-
             <div class="input-group">
                 <label for="regPassword">Contraseña *</label>
                 <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
             </div>
-
             <div class="input-group">
                 <label for="regRol">Rol *</label>
                 <select id="regRol" required>
@@ -470,7 +302,6 @@
                     <option value="ADMINISTRADOR">Administrador</option>
                 </select>
             </div>
-
             <div id="operadorFields">
                 <div class="input-group">
                     <label for="regEspecialidad">Especialidad</label>
@@ -481,14 +312,12 @@
                     <input type="text" id="regUbicacion" placeholder="Ciudad o zona asignada">
                 </div>
             </div>
-
             <div id="adminFields" style="display: none;">
                 <div class="input-group">
                     <label for="regDepartamento">Departamento</label>
                     <input type="text" id="regDepartamento" placeholder="ej. Coordinación">
                 </div>
             </div>
-
             <button type="submit" class="btn-primary" id="registerBtn">Crear Cuenta</button>
             <button type="button" class="btn-secondary" id="backToLoginBtn">Volver al Login</button>
         </form>
@@ -507,19 +336,19 @@
 
     <div class="container">
         <div class="hero">
-            <h1>Bienvenido al Sistema de Gestión de Desastres</h1>
+            <h1>Sistema de Gestión con Routing Real y Zonas Delimitadas</h1>
             <div class="features">
                 <div class="feature-card">
-                    <h3>Gestión eficiente</h3>
-                    <p>Optimizar recursos en situaciones críticas y urgentes.</p>
+                    <h3>🗺️ Routing Real</h3>
+                    <p>Rutas siguiendo calles y carreteras reales con OpenStreetMap</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Recursos disponibles</h3>
-                    <p>Inventario actualizado para una gestión eficaz.</p>
+                    <h3>📍 Zonas con Área</h3>
+                    <p>Define zonas circulares con radio ajustable</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Evacuaciones seguras</h3>
-                    <p>Planificación clara para situaciones de emergencia.</p>
+                    <h3>🛣️ Dijkstra + OSM</h3>
+                    <p>Algoritmo de Dijkstra aplicado sobre vías reales</p>
                 </div>
             </div>
         </div>
@@ -527,23 +356,128 @@
         <div class="main-actions">
             <div class="action-card" onclick="showMap()">
                 <h2>🗺️ Mapa Interactivo</h2>
-                <p>Visualiza y selecciona zonas críticas en tiempo real</p>
-                <button class="btn-action">Ver Mapa</button>
+                <p>Visualiza zonas con áreas y rutas por calles reales</p>
+                <button class="btn-action">Abrir Mapa</button>
             </div>
         </div>
 
         <!-- Map Section -->
         <div id="mapSection" class="hidden">
-            <h2 style="color: white; margin-bottom: 20px;">📍 Mapa Interactivo - Selecciona una Ubicación</h2>
+            <h2 style="color: white; margin-bottom: 20px;">📍 Mapa Interactivo con Routing Real</h2>
             <div id="map"></div>
 
             <div class="map-controls">
-                <h3>Ubicación Seleccionada</h3>
+                <h3>Modo de Operación</h3>
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="select" onclick="setMode('select')">
+                        📍 Seleccionar Punto
+                    </button>
+                    <button class="mode-btn" data-mode="create-zone" onclick="setMode('create-zone')">
+                        🏙️ Crear Zona con Área
+                    </button>
+                    <button class="mode-btn" data-mode="calculate-route" onclick="setMode('calculate-route')">
+                        🧭 Calcular Ruta Real (OSM)
+                    </button>
+                </div>
+
+                <div id="modeInstructions" style="background: #fff3cd; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong>📍 Modo Seleccionar:</strong> Haz clic en el mapa para ver información del lugar
+                </div>
+
                 <div id="selectedLocationInfo">
-                    <p style="color: #999; font-style: italic;">Haz clic en el mapa para seleccionar una ubicación</p>
+                    <p style="color: #999; font-style: italic;">Haz clic en el mapa para comenzar</p>
+                </div>
+
+                <div class="legend">
+                    <h4>📊 Leyenda del Mapa</h4>
+                    <div class="legend-item">
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: #4CAF50; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 16px;">🚀</span>
+                        </div>
+                        <span><strong>Punto de Origen</strong> - Inicio de la ruta</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: #F44336; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 16px;">🏁</span>
+                        </div>
+                        <span><strong>Punto de Destino</strong> - Fin de la ruta</span>
+                    </div>
+                    <hr style="margin: 12px 0; border: none; border-top: 1px solid #ddd;">
+                    <div class="legend-item">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(244, 67, 54, 0.3); border: 3px solid #F44336;"></div>
+                        <span>Zona <strong>CRÍTICA</strong> con área de cobertura</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 152, 0, 0.3); border: 3px solid #FF9800;"></div>
+                        <span>Zona <strong>ALTA</strong> con área de cobertura</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 193, 7, 0.3); border: 3px solid #FFC107;"></div>
+                        <span>Zona <strong>MEDIA</strong> con área de cobertura</span>
+                    </div>
+                    <div class="legend-item">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(76, 175, 80, 0.3); border: 3px solid #4CAF50;"></div>
+                        <span>Zona <strong>BAJA</strong> con área de cobertura</span>
+                    </div>
+                    <hr style="margin: 12px 0; border: none; border-top: 1px solid #ddd;">
+                    <div class="legend-item">
+                        <div style="width: 40px; height: 4px; background: #2196f3; border-radius: 2px;"></div>
+                        <span><strong>Ruta por Calles Reales</strong> (OpenStreetMap)</span>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Modal para crear zona -->
+<div id="createZoneModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('createZoneModal')">&times;</span>
+        <h2>🏙️ Crear Nueva Zona con Área</h2>
+        <form id="createZoneForm">
+            <div class="input-group">
+                <label>ID de la Zona *</label>
+                <input type="text" id="zoneId" required placeholder="ej. Z004">
+            </div>
+            <div class="input-group">
+                <label>Nombre *</label>
+                <input type="text" id="zoneName" required placeholder="ej. Zona Centro">
+            </div>
+            <div class="input-group">
+                <label>Descripción</label>
+                <input type="text" id="zoneDesc" placeholder="Descripción de la zona">
+            </div>
+            <div class="input-group">
+                <label>Población Afectada</label>
+                <input type="number" id="zonePop" value="0" min="0">
+            </div>
+            <div class="input-group">
+                <label>Nivel de Urgencia *</label>
+                <select id="zoneUrgency" required>
+                    <option value="BAJA">Baja</option>
+                    <option value="MEDIA">Media</option>
+                    <option value="ALTA">Alta</option>
+                    <option value="CRITICA">Crítica</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Radio de Cobertura (metros) *</label>
+                <div class="slider-container">
+                    <input type="range" id="zoneRadius" min="100" max="5000" value="500" step="50">
+                    <div class="slider-value"><span id="radiusValue">500</span> metros</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Coordenadas Centro</label>
+                <input type="text" id="zoneCoords" readonly>
+            </div>
+            <div id="addressDisplay" class="address-info" style="display: none;">
+                <strong>📍 Dirección aproximada:</strong><br>
+                <span id="addressText">Cargando...</span>
+            </div>
+            <button type="submit" class="btn-primary">Crear Zona</button>
+        </form>
     </div>
 </div>
 
@@ -551,9 +485,23 @@
     const API_URL = 'http://localhost:8080/api';
     let currentUser = null;
     let map = null;
-    let selectedMarker = null;
-    let selectedLocation = null;
-    let zonaMarkers = [];
+    let currentMode = 'select';
+    let selectedPoints = [];
+    let zonas = [];
+    let zoneCircles = [];
+    let currentRoutingControl = null;
+    let tempCircle = null;
+
+    // Geocoding inverso para obtener direcciones
+    async function getAddress(lat, lng) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+            const data = await response.json();
+            return data.display_name || 'Dirección no disponible';
+        } catch (error) {
+            return 'Error obteniendo dirección';
+        }
+    }
 
     async function checkApiConnection() {
         try {
@@ -604,7 +552,6 @@
                     document.getElementById('loginPage').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
                     document.getElementById('userInfo').textContent = `👤 ${data.user.nombre}`;
-                    initializeMap();
                 }, 1000);
             } else {
                 showMessage('loginError', data.message || 'Credenciales inválidas');
@@ -617,7 +564,7 @@
         }
     });
 
-    // Register - Show/Hide
+    // Register
     document.getElementById('showRegisterLink').addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('loginPage').style.display = 'none';
@@ -629,7 +576,6 @@
         document.getElementById('loginPage').style.display = 'flex';
     });
 
-    // Register - Toggle fields based on role
     document.getElementById('regRol').addEventListener('change', function() {
         const operadorFields = document.getElementById('operadorFields');
         const adminFields = document.getElementById('adminFields');
@@ -643,7 +589,6 @@
         }
     });
 
-    // Register Form Submit
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const registerBtn = document.getElementById('registerBtn');
@@ -677,13 +622,13 @@
             const data = await response.json();
 
             if (data.success) {
-                showMessage('registerSuccess', '¡Cuenta creada exitosamente! Redirigiendo al login...');
+                showMessage('registerSuccess', '¡Cuenta creada exitosamente! Redirigiendo...');
 
                 setTimeout(() => {
                     document.getElementById('registerForm').reset();
                     document.getElementById('registerPage').style.display = 'none';
                     document.getElementById('loginPage').style.display = 'flex';
-                    showMessage('loginSuccess', 'Cuenta creada. Puedes iniciar sesión ahora.');
+                    showMessage('loginSuccess', 'Cuenta creada. Puedes iniciar sesión.');
                 }, 2000);
             } else {
                 showMessage('registerError', data.message || 'Error al crear la cuenta');
@@ -703,148 +648,419 @@
         setTimeout(() => element.style.display = 'none', 5000);
     }
 
-    // Initialize Map with selection capability
+    // Funciones del Mapa
     async function initializeMap() {
         if (!map) {
-            map = L.map('map').setView([4.5389, -75.6678], 12);
+            map = L.map('map').setView([4.5389, -75.6678], 13);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add click event to map
-            map.on('click', function(e) {
-                selectLocation(e.latlng);
-            });
-
-            // Load existing zones
-            try {
-                const response = await fetch(`${API_URL}/zonas`);
-                const zonas = await response.json();
-
-                zonas.forEach(zona => {
-                    const color = zona.color === 'Rojo' ? 'red' :
-                        zona.color === 'Naranja' ? 'orange' :
-                            zona.color === 'Amarillo' ? 'yellow' : 'green';
-
-                    const marker = L.circleMarker([zona.coordenadaX, zona.coordenadaY], {
-                        color: color,
-                        fillColor: color,
-                        fillOpacity: 0.5,
-                        radius: 15
-                    }).bindPopup(`
-                        <b>${zona.nombre}</b><br>
-                        Nivel: ${zona.nivelUrgencia}<br>
-                        Población: ${zona.poblacionAfectada}
-                    `).addTo(map);
-
-                    marker.on('click', function() {
-                        selectZone(zona);
-                    });
-
-                    zonaMarkers.push({ marker, zona });
-                });
-            } catch (error) {
-                console.error('Error cargando zonas:', error);
-            }
+            map.on('click', handleMapClick);
+            await loadZones();
         }
     }
 
-    function selectLocation(latlng) {
-        // Remove previous marker if exists
-        if (selectedMarker) {
-            map.removeLayer(selectedMarker);
-        }
+    async function loadZones() {
+        try {
+            const response = await fetch(`${API_URL}/zonas`);
+            zonas = await response.json();
 
-        // Add new marker
-        selectedMarker = L.marker(latlng, {
-            icon: L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            })
+            zonas.forEach(zona => {
+                createZoneOnMap(zona);
+            });
+        } catch (error) {
+            console.error('Error cargando zonas:', error);
+        }
+    }
+
+    function createZoneOnMap(zona) {
+        const color = getColorByUrgency(zona.nivelUrgencia);
+        const radius = zona.radio || 500; // Radio en metros
+
+        // Crear círculo para la zona
+        const circle = L.circle([zona.coordenadaX, zona.coordenadaY], {
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.3,
+            radius: radius,
+            weight: 3
         }).addTo(map);
 
-        selectedLocation = {
-            lat: latlng.lat.toFixed(6),
-            lng: latlng.lng.toFixed(6),
-            type: 'custom'
-        };
+        // Crear marcador en el centro
+        const marker = L.marker([zona.coordenadaX, zona.coordenadaY], {
+            icon: L.divIcon({
+                html: `<div style="background: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"><span style="color: white; font-size: 12px; font-weight: bold;">${zona.nivelUrgencia.charAt(0)}</span></div>`,
+                className: '',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            })
+        }).bindPopup(`
+            <b>${zona.nombre}</b><br>
+            ID: ${zona.id}<br>
+            Nivel: ${zona.nivelUrgencia}<br>
+            Población: ${zona.poblacionAfectada}<br>
+            Radio: ${radius} metros
+        `).addTo(map);
 
-        displaySelectedLocation();
+        zoneCircles.push({ circle, marker, zona });
     }
 
-    function selectZone(zona) {
-        selectedLocation = {
-            lat: zona.coordenadaX.toFixed(6),
-            lng: zona.coordenadaY.toFixed(6),
-            type: 'zone',
-            zona: zona
-        };
-
-        displaySelectedLocation();
-    }
-
-    function displaySelectedLocation() {
-        const infoDiv = document.getElementById('selectedLocationInfo');
-
-        if (selectedLocation.type === 'zone') {
-            const zona = selectedLocation.zona;
-            infoDiv.innerHTML = `
-                <div class="selected-location">
-                    <h4 style="color: #667eea; margin-bottom: 10px;">🏙️ Zona Registrada</h4>
-                    <p><strong>Nombre:</strong> ${zona.nombre}</p>
-                    <p><strong>Nivel de Urgencia:</strong> ${zona.nivelUrgencia}</p>
-                    <p><strong>Población Afectada:</strong> ${zona.poblacionAfectada}</p>
-                    <p><strong>Coordenadas:</strong> ${selectedLocation.lat}, ${selectedLocation.lng}</p>
-                    <button class="btn-action" style="margin-top: 10px;" onclick="useSelectedLocation()">
-                        Usar Esta Ubicación
-                    </button>
-                </div>
-            `;
-        } else {
-            infoDiv.innerHTML = `
-                <div class="selected-location">
-                    <h4 style="color: #667eea; margin-bottom: 10px;">📍 Ubicación Seleccionada</h4>
-                    <p><strong>Latitud:</strong> ${selectedLocation.lat}</p>
-                    <p><strong>Longitud:</strong> ${selectedLocation.lng}</p>
-                    <button class="btn-action" style="margin-top: 10px;" onclick="useSelectedLocation()">
-                        Usar Esta Ubicación
-                    </button>
-                </div>
-            `;
+    function getColorByUrgency(urgency) {
+        switch(urgency) {
+            case 'CRITICA': return '#F44336';
+            case 'ALTA': return '#FF9800';
+            case 'MEDIA': return '#FFC107';
+            case 'BAJA': return '#4CAF50';
+            default: return '#9E9E9E';
         }
     }
 
-    function useSelectedLocation() {
-        if (selectedLocation) {
-            alert(`Ubicación guardada:\nLatitud: ${selectedLocation.lat}\nLongitud: ${selectedLocation.lng}\n\nPuedes usar esta ubicación para crear nuevas zonas, rutas o asignar recursos.`);
-            console.log('Ubicación seleccionada:', selectedLocation);
+    function handleMapClick(e) {
+        const latlng = e.latlng;
+
+        switch(currentMode) {
+            case 'select':
+                selectPoint(latlng);
+                break;
+            case 'create-zone':
+                openCreateZoneModal(latlng);
+                break;
+            case 'calculate-route':
+                selectPointForRoute(latlng);
+                break;
+        }
+    }
+
+    function selectPoint(latlng) {
+        if (window.selectedMarker) {
+            map.removeLayer(window.selectedMarker);
+        }
+
+        window.selectedMarker = L.marker(latlng).addTo(map)
+            .bindPopup(`📍 Punto seleccionado<br>Lat: ${latlng.lat.toFixed(6)}<br>Lng: ${latlng.lng.toFixed(6)}`)
+            .openPopup();
+
+        displaySelectedPoint(latlng);
+    }
+
+    async function displaySelectedPoint(latlng) {
+        const address = await getAddress(latlng.lat, latlng.lng);
+        const infoDiv = document.getElementById('selectedLocationInfo');
+        infoDiv.innerHTML = `
+            <div class="selected-location">
+                <h4 style="color: #667eea; margin-bottom: 10px;">📍 Información del Punto</h4>
+                <p><strong>Latitud:</strong> ${latlng.lat.toFixed(6)}</p>
+                <p><strong>Longitud:</strong> ${latlng.lng.toFixed(6)}</p>
+                <p><strong>Dirección:</strong> ${address}</p>
+                <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-action" onclick="setMode('create-zone'); openCreateZoneModal({lat: ${latlng.lat}, lng: ${latlng.lng}})">
+                        Crear Zona Aquí
+                    </button>
+                    <button class="btn-action" onclick="setMode('calculate-route'); addRoutePoint({lat: ${latlng.lat}, lng: ${latlng.lng}})">
+                        Usar para Ruta
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function openCreateZoneModal(latlng) {
+        document.getElementById('zoneCoords').value = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+        window.tempZoneCoords = latlng;
+
+        // Mostrar círculo temporal
+        if (tempCircle) {
+            map.removeLayer(tempCircle);
+        }
+
+        const radius = parseInt(document.getElementById('zoneRadius').value);
+        tempCircle = L.circle(latlng, {
+            color: '#667eea',
+            fillColor: '#667eea',
+            fillOpacity: 0.2,
+            radius: radius,
+            weight: 2,
+            dashArray: '5, 5'
+        }).addTo(map);
+
+        // Actualizar dirección
+        updateAddressDisplay(latlng);
+
+        document.getElementById('createZoneModal').style.display = 'flex';
+    }
+
+    async function updateAddressDisplay(latlng) {
+        const addressDisplay = document.getElementById('addressDisplay');
+        const addressText = document.getElementById('addressText');
+
+        addressDisplay.style.display = 'block';
+        addressText.textContent = 'Cargando dirección...';
+
+        const address = await getAddress(latlng.lat, latlng.lng);
+        addressText.textContent = address;
+    }
+
+    // Control deslizante para el radio
+    document.getElementById('zoneRadius').addEventListener('input', function(e) {
+        const radius = parseInt(e.target.value);
+        document.getElementById('radiusValue').textContent = radius;
+
+        if (tempCircle && window.tempZoneCoords) {
+            tempCircle.setRadius(radius);
+        }
+    });
+
+    // Rutas con OSM Routing
+    let routePoints = [];
+    let routeMarkers = [];
+
+    function addRoutePoint(latlng) {
+        routePoints.push(latlng);
+
+        const marker = L.marker(latlng, {
+            icon: L.divIcon({
+                html: `<div style="background: ${routePoints.length === 1 ? '#4CAF50' : '#F44336'}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"><span style="color: white; font-size: 14px; font-weight: bold;">${routePoints.length === 1 ? 'A' : 'B'}</span></div>`,
+                className: '',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            })
+        }).addTo(map)
+            .bindPopup(`Punto ${routePoints.length === 1 ? 'Origen (A)' : 'Destino (B)'}<br>${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`)
+            .openPopup();
+
+        routeMarkers.push(marker);
+
+        if (routePoints.length === 2) {
+            calculateRealRoute();
+        } else {
+            updateModeInstructions('📍 Selecciona el punto de DESTINO (B) para la ruta');
+        }
+    }
+
+    function selectPointForRoute(latlng) {
+        addRoutePoint(latlng);
+    }
+
+    function calculateRealRoute() {
+        if (currentRoutingControl) {
+            map.removeControl(currentRoutingControl);
+        }
+
+        const infoDiv = document.getElementById('selectedLocationInfo');
+        infoDiv.innerHTML = `
+            <div style="text-align: center; padding: 20px; background: white; border-radius: 10px;">
+                <div style="font-size: 36px; margin-bottom: 10px;">🛣️</div>
+                <h4 style="color: #667eea; margin-bottom: 10px;">Calculando Ruta Real...</h4>
+                <p style="color: #666;">Buscando la mejor ruta por calles y carreteras</p>
+            </div>
+        `;
+
+        // Usar Leaflet Routing Machine para rutas reales
+        currentRoutingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(routePoints[0].lat, routePoints[0].lng),
+                L.latLng(routePoints[1].lat, routePoints[1].lng)
+            ],
+            routeWhileDragging: false,
+            showAlternatives: false,
+            lineOptions: {
+                styles: [
+                    {
+                        color: '#2196f3',
+                        weight: 6,
+                        opacity: 0.8
+                    }
+                ]
+            },
+            createMarker: function() { return null; } // No crear marcadores adicionales
+        }).addTo(map);
+
+        currentRoutingControl.on('routesfound', function(e) {
+            const routes = e.routes;
+            const route = routes[0];
+
+            displayRouteInfoReal(route);
+        });
+
+        currentRoutingControl.on('routingerror', function(e) {
+            infoDiv.innerHTML = `
+                <div style="text-align: center; padding: 20px; background: #ffebee; border-radius: 10px; border: 2px solid #ef5350;">
+                    <div style="font-size: 36px; margin-bottom: 10px;">❌</div>
+                    <h4 style="color: #c62828; margin-bottom: 10px;">Error en el Routing</h4>
+                    <p style="color: #666; margin-bottom: 15px;">No se pudo calcular la ruta. Intenta con puntos más cercanos a carreteras.</p>
+                    <button class="btn-action" onclick="resetMode()">Reintentar</button>
+                </div>
+            `;
+        });
+    }
+
+    function displayRouteInfoReal(route) {
+        const distance = (route.summary.totalDistance / 1000).toFixed(2); // km
+        const time = (route.summary.totalTime / 60).toFixed(0); // minutos
+
+        const infoDiv = document.getElementById('selectedLocationInfo');
+        infoDiv.innerHTML = `
+            <div class="route-info" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
+                <h4 style="color: #1565c0; margin-bottom: 15px;">🛣️ Ruta por Calles Reales</h4>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 24px; color: #2196f3; font-weight: bold;">${distance}</div>
+                        <div style="color: #666; font-size: 12px;">KILÓMETROS</div>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 24px; color: #4CAF50; font-weight: bold;">${time}</div>
+                        <div style="color: #666; font-size: 12px;">MINUTOS</div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                    <p><strong>Origen:</strong> ${routePoints[0].lat.toFixed(6)}, ${routePoints[0].lng.toFixed(6)}</p>
+                    <p><strong>Destino:</strong> ${routePoints[1].lat.toFixed(6)}, ${routePoints[1].lng.toFixed(6)}</p>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-action" onclick="resetMode()" style="flex: 1;">
+                        🔄 Nueva Ruta
+                    </button>
+                    <button class="btn-action" onclick="clearRoute()" style="flex: 1; background: #FF9800;">
+                        🗑️ Limpiar Ruta
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function clearRoute() {
+        if (currentRoutingControl) {
+            map.removeControl(currentRoutingControl);
+            currentRoutingControl = null;
+        }
+        routePoints = [];
+        routeMarkers.forEach(marker => map.removeLayer(marker));
+        routeMarkers = [];
+        resetMode();
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+
+        // Limpiar selecciones anteriores
+        if (mode !== 'calculate-route') {
+            clearRoute();
+        }
+        if (mode !== 'create-zone' && tempCircle) {
+            map.removeLayer(tempCircle);
+            tempCircle = null;
+        }
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.mode === mode) {
+                btn.classList.add('active');
+            }
+        });
+
+        const instructions = {
+            'select': '📍 Modo Seleccionar: Haz clic en el mapa para ver información detallada del lugar',
+            'create-zone': '🏙️ Modo Crear Zona: Haz clic en el mapa para definir el centro de una nueva zona con área de cobertura',
+            'calculate-route': '🧭 Modo Calcular Ruta: Selecciona dos puntos para calcular una ruta real por calles y carreteras'
+        };
+
+        updateModeInstructions(instructions[mode]);
+
+        if (mode === 'select') {
+            document.getElementById('selectedLocationInfo').innerHTML =
+                '<p style="color: #999; font-style: italic;">Haz clic en el mapa para ver información del lugar</p>';
+        } else {
+            document.getElementById('selectedLocationInfo').innerHTML =
+                '<p style="color: #999; font-style: italic;">' + instructions[mode] + '</p>';
+        }
+    }
+
+    function updateModeInstructions(text) {
+        document.getElementById('modeInstructions').innerHTML = `<strong>${text}</strong>`;
+    }
+
+    function resetMode() {
+        setMode(currentMode);
+    }
+
+    document.getElementById('createZoneForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const zoneData = {
+            id: document.getElementById('zoneId').value,
+            nombre: document.getElementById('zoneName').value,
+            descripcion: document.getElementById('zoneDesc').value,
+            coordenadaX: window.tempZoneCoords.lat,
+            coordenadaY: window.tempZoneCoords.lng,
+            poblacionAfectada: parseInt(document.getElementById('zonePop').value),
+            nivelUrgencia: document.getElementById('zoneUrgency').value,
+            radio: parseInt(document.getElementById('zoneRadius').value)
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/zonas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(zoneData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('✅ Zona creada exitosamente');
+                closeModal('createZoneModal');
+                document.getElementById('createZoneForm').reset();
+
+                if (tempCircle) {
+                    map.removeLayer(tempCircle);
+                    tempCircle = null;
+                }
+
+                // Recargar zonas
+                location.reload();
+            } else {
+                alert('❌ Error: ' + result.message);
+            }
+        } catch (error) {
+            alert('❌ Error de conexión: ' + error.message);
+        }
+    });
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+        if (tempCircle) {
+            map.removeLayer(tempCircle);
+            tempCircle = null;
         }
     }
 
     function showMap() {
         document.getElementById('mapSection').classList.remove('hidden');
-        setTimeout(() => {
-            if (map) map.invalidateSize();
-        }, 100);
+        if (!map) {
+            initializeMap();
+        } else {
+            setTimeout(() => map.invalidateSize(), 100);
+        }
     }
 
     function logout() {
         if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
             currentUser = null;
-            selectedLocation = null;
-            if (selectedMarker) {
-                map.removeLayer(selectedMarker);
-                selectedMarker = null;
-            }
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+        }
+    }
+
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            closeModal(event.target.id);
         }
     }
 </script>
